@@ -50,7 +50,7 @@ const Employee = function (sequelize, Sequelize) {
                     model: "branch",
                     key: "branchId",
                 },
-            }
+            },
         },
         {
             sequelize,
@@ -83,6 +83,16 @@ const Employee = function (sequelize, Sequelize) {
                         {
                             name: "branchId"
                         },
+                    ]
+                },
+                {
+                    name: "employeeEmailId",
+                    unique: true,
+                    using: "BTREE",
+                    fields: [
+                        {
+                            name: "email"
+                        }
                     ]
                 }
             ]

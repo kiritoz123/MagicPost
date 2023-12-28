@@ -66,6 +66,55 @@ class EmployeeControler {
     }
     //POST /employee/create
     async employeeCreateAccount(req, res, next) {
+        const schema = Joi.object({
+            email: Joi.string().email().required(),
+            password: joi.string().required(),
+            firstName: Joi.string().pattern(
+                new RegExp("/^[\p{L}\p{M}- ]+$/u")
+            ).required(),
+            lastName: Joi.string().pattern(
+                new RegExp("/^[\p{L}\p{M}- ]+$/u")
+            ).required(),
+            address: Joi.string().pattern(
+                new RegExp("/^[\p{L}\p{M},./ 0-9]+$/u")
+            ).required(),
+            phone: Joi.string().pattern(
+                new RegExp("/^(0[23789]|05)\d{8}$/")
+            ).required(),
+            roleId: Joi.number().integer().min(1).max(5),
+            branchId: Joi.number().integer().min(1),
+        });
+        const dateSchema = Joi.object({
+            day: Joi.number().integer().min(1).max(31).required(),
+            month: Joi.number().integer().min(1).max(12).required(),
+            year: Joi.number().integer().min(1900).max(2099).required()
+        }).custom((value, helpers) => {
+            const {day, month, year} = value;
+            const date = new Date(year, month - 1, day);
+            if (date.getFullYear() !== year || date.getMonth() + 1 !== month || date.getDate() !== day) {
+                return helpers.error('any.invalid');
+            }
+            return value;
+        }, 'Date validation');
+        const result = schema.validate({
+            email: req.body.email,
+            password: req.body.password,
+            firstName: req.body.firstName,
+            lastName: req.body.lastName,
+            address: req.body.address,
+            phone: req.body.phone,
+            roleId: req.body.roleId,
+            branchId: req.body.branchId,
+        });
+        const dateResult = dateSchema.validate({
+            day: req.body.day,
+            month: req.body.month,
+            year: req.body.year,
+        });
+        if (result.error || dateResult.error) {
+            return res.status(400).send("Bad request");
+        }
+
         const accountEmail = req.body.email;
         const accountPassword = req.body.password;
         const firstName = req.body.firstName;
@@ -414,23 +463,33 @@ class EmployeeControler {
 
     //GET /employee/:employeeId
     async getEmployeeById(req, res, next) {
+        const idSchema = Joi.number().integer().min(1);
+        const result = idSchema.validate(req.params.id);
+        if (result.error) {
+            return res.status(400).send("Bad request");
+        }
         const employee_id = req.params.employeeId;
-        return res.status(200).json(
-            await Employee.findOne({
-                where: {
-                    employeeId: employee_id,
-                },
-                attributes: {
-                    exclude: ["password"],
-                },
-                include: [
-                    {
-                        model: Role,
-                        required: true,
-                    }
-                ]
-            })
-        );
+        const employee = await Employee.findOne({
+            where: {
+                employeeId: employee_id,
+            },
+            attributes: {
+                exclude: ["password"],
+            },
+            include: [
+                {
+                    model: Role,
+                    required: true,
+                }
+            ]
+        });
+        if (!employee) {
+            return res.status(404).json({
+                status: "Query fail",
+                msg: `Employee with id ${employeeId} doesn't exists`,
+            });
+        }
+        return res.status(200).json(employee);
     }
 }
 

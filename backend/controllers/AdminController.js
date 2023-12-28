@@ -1,12 +1,24 @@
 const dotenv = require("dotenv").config()
+const joi = require("joi")
 const bcrypt = require("bcrypt")
-const session = require("express-session")
 const { models: {Admin }} = require("../models")
 
 class AdminController {
 
     //POST /admin/create
     async adminCreateAccount(req, res, next) {
+        const adminCreateSchema = createJoiObject(
+            {
+                username: joi.string().alphanum().required().min(5).max(255),
+                password: joi.string().required()
+            }
+        );
+        const {error} = adminCreateSchema.validate(req.body)
+        if(error){
+            return res.status(400).json({
+                msg: "Invalid request!"
+            })
+        }
         const adminUsername = req.body.username;
         const adminPassword = req.body.password;
         if (!adminUsername || !adminPassword) {
@@ -38,6 +50,18 @@ class AdminController {
 
     //POST /admin/login
     async adminLogIn(req, res, next) {
+        const adminLoginSchema = createJoiObject(
+            {
+                username: joi.string().alphanum().required().min(5).max(255),
+                password: joi.string().required()
+            }
+        );
+        const {error} = adminLoginSchema.validate(req.body)
+        if(error){
+            return res.status(400).json({
+                msg: "Invalid request!"
+            })
+        }
         const adminUsername = req.body.username;
         const adminPassword = req.body.password;
         const admin = await Admin.findOne({

@@ -1,9 +1,9 @@
 const Status = function (sequelize, Sequelize) {
     return sequelize.define("status",{
         statusId:{
-            type:Sequelize.TINYINT(1),
-            allowNull:false,
-            primaryKey:true,
+            type:Sequelize.TINYINT(1).UNSIGNED,
+            allowNull: false,
+            primaryKey: true,
         },
         statusDetail:{
             type: Sequelize.STRING,

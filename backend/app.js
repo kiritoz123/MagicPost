@@ -21,7 +21,7 @@ async function dbInitialize() {
 
     const connection = await mysql.createConnection({ host, port, user, password });
     await connection.query(`CREATE DATABASE IF NOT EXISTS \`${database}\`;`);
-    await db.sequelize.sync();
+    await db.sequelize.sync({alter: true});
 }
 
 // CORS
@@ -45,7 +45,7 @@ app.get("/", (req, res) => {
     res.json({message: "Test server 1"});
 });
 
-app.use("/", routes)
+app.use("/api", routes)
 
 const PORT = process.env.PORT || 3000;
 app.listen(PORT, () => {

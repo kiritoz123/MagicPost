@@ -10,6 +10,15 @@ class RoleController {
 
     //GET /role/:roleId
     async getEmployeesByRole(req, res, next) {
+        const schema = Joi.object({
+            id: Joi.number().min(1).max(5).required(),
+        });
+        const result = schema.validate({
+            id: req.params.roleId,
+        });
+        if (result.error) {
+            return res.status(400).send("Bad request");
+        }
         const roleId = req.params.roleId;
         const role = await Role.findOne({
             where: {

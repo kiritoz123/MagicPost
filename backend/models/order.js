@@ -6,20 +6,12 @@ const Order = function (sequelize, Sequelize) {
                 allowNull: false,
                 primaryKey: true,
             },
-            customId: {
+            customerId: {
                 type: Sequelize.BIGINT.UNSIGNED,
                 allowNull: false,
                 references: {
                     model: "customer",
                     key: "customerId",
-                }
-            },
-            deliveryId: {
-                type: Sequelize.BIGINT.UNSIGNED,
-                allowNull: false,
-                references: {
-                    model: "delivery",
-                    key: "deliveryId",
                 }
             },
             parcelId:  {
@@ -38,10 +30,39 @@ const Order = function (sequelize, Sequelize) {
                     key: "employeeId",
                 }
             },
+            statusId: {
+                type: Sequelize.TINYINT(1).UNSIGNED,
+                allowNull: false,
+                defaultValue: 1,
+                references: {
+                    model: "status",
+                    key: "statusId",
+                }
+            },
+            branchId: {
+                type: Sequelize.BIGINT.UNSIGNED,
+                allowNull: false,
+                references: {
+                    model: "branch",
+                    key: "branchId",
+                }
+            },
             orderDate: {
                 type: Sequelize.DATE,
                 allowNull: false,
-            }
+            },
+            receiverName: {
+                type: Sequelize.STRING,
+                allowNull: false,
+            },
+            receiverPhone: {
+                type: Sequelize.STRING,
+                allowNull: false,
+            },
+            receiverAddress: {
+                type: Sequelize.STRING,
+                allowNull: false,
+            },
         },
         {
             sequelize,

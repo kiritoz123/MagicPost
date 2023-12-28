@@ -7,6 +7,14 @@ const Delivery = function (sequelize, Sequelize) {
                 autoIncrement: true,
                 primaryKey: true,
             },
+            orderId: {
+                type: Sequelize.STRING,
+                allowNull: false,
+                references: {
+                    model: "order",
+                    key: "orderId",
+                }
+            },
             senderId: {
                 type: Sequelize.BIGINT.UNSIGNED,
                 allowNull: false,
@@ -30,11 +38,6 @@ const Delivery = function (sequelize, Sequelize) {
             receiveDate: {
                 type: Sequelize.DATE,
                 allowNull: false,
-            },
-            status: {
-                type: Sequelize.TINYINT(1),
-                allowNull: false, // 1: pending, 2: delivering, 3: delivered, 4: return
-                defaultValue: 1,
             },
         },
         {
@@ -70,15 +73,6 @@ const Delivery = function (sequelize, Sequelize) {
                         }
                     ]
                 },
-                {
-                    name: "deliveryStatus",
-                    using: "BTREE",
-                    fields: [
-                        {
-                            name: "status"
-                        }
-                    ]
-                }
             ]
         }
     )

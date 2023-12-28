@@ -1,0 +1,89 @@
+
+POST http://localhost:3000/api/admin/login
+content-type: application/json
+
+{
+    "username": "admin",
+    "password": "password"
+}
+###
+POST http://localhost:3000/api/admin/logout
+###
+
+GET http://localhost:3000/api/admin
+###
+GET http://localhost:3000
+
+###
+POST http://localhost:3000/api/admin/create
+content-type: application/json
+
+{
+    "username": "admi@gmail.com",
+    "password": "ddd"
+}
+
+###
+POST http://localhost:3000/employee/create
+Content-Type: application/json
+
+{
+    "email":"abc@123.vn",
+    "password": "password",
+    "firstName": "deptrai",
+    "lastName": "deptrai",
+    "dateOfBirth": "10/10/2010",
+    "address": "and, sjs, đmm",
+    "phone": "0999299292",
+    "roleId": 1,
+    "branchId": null
+}
+
+###
+POST http://localhost:3000/employee/login
+Content-Type: application/json
+
+{
+    "email": "abc@123.vn",
+    "password": "password"
+}
+###
+POST http://localhost:3000/employee/logout
+
+###
+GET http://localhost:3000/employee
+
+###
+POST http://localhost:3000/employee/create
+Content-Type: application/json
+
+{
+    "email":"employee@123.vn",
+    "password": "password",
+    "firstName": "deptrai",
+    "lastName": "deptrai",
+    "dateOfBirth": "10/10/2010",
+    "address": "and, sjs, đmm",
+    "phone": "0999299252",
+    "roleId": 2,
+    "branchId": 1
+}
+
+###
+GET http://localhost:3000/role
+###
+GET http://localhost:3000/role/1
+
+###
+POST http://localhost:3000/employee/2/update
+Content-Type: application/json
+
+{
+    "firstName": "occho"
+}
+
+###
+POST http://localhost:3000/employee/8/delete
+
+###
+GET http://localhost:3000/getData
