@@ -31,6 +31,7 @@ class EmployeeControler {
         }
         
         req.session.user = {
+            id: employee.employeeId,
             email: employee.email,
             role: employee.roleId,
         }
@@ -39,6 +40,7 @@ class EmployeeControler {
             msg: "Log in successfully!",
             user: 
             {
+                id: employee.employeeId,
                 email: employee.email,
                 role: employee.roleId
             }
@@ -135,8 +137,17 @@ class EmployeeControler {
     async employeeUpdateAccount(req, res, next) {
         if (req.session.user.role === "admin") {
             try {
-                const { firstName, lastName, dateOfBirth, address, phone, email, password, roleId, branchId } = req.body;
-                            
+
+                const email = req.body.email;
+                const password = req.body.password;
+                const firstName = req.body.firstName;
+                const lastName = req.body.lastName;
+                const dateOfBirth = req.body.dateOfBirth;
+                const address = req.body.address;
+                const phone = req.body.phone;
+                const roleId = req.body.roleId;
+                const branchId = req.body.branchId;
+                                    
                 // Update the employee's account with the provided fields
                 const updatedFields = {};
                 
@@ -176,14 +187,15 @@ class EmployeeControler {
                 if (branchId) {
                     updatedFields.branchId = branchId;
                 }
+                console.log(updatedFields)
                 const employee = await Employee.findOne({
                     where: {
-                        employeeId: req.params.id,
+                        employeeId: req.params.employeeId,
                     }
                 });
 
                 if (!employee) {
-                    req.status(500).json({message: "Employee doesn't exist!"})
+                    res.status(500).json({message: "Employee doesn't exist!"})
                 } else {
                     employee.set(updatedFields);
                     // Update the employee's account in the database
@@ -204,11 +216,18 @@ class EmployeeControler {
                 const user = await Employee.findOne(
                     {
                         where: {
-                            email: req.session.user.email,
+                            id: req.session.user.id,
                         }
                     }
                 )
-                const {firstName, lastName, dateOfBirth, address, phone, email, password, roleId} = req.body;       
+                const email = req.body.email;
+                const password = req.body.password;
+                const firstName = req.body.firstName;
+                const lastName = req.body.lastName;
+                const dateOfBirth = req.body.dateOfBirth;
+                const address = req.body.address;
+                const phone = req.body.phone;
+                
                 // Update the employee's account with the provided fields
                 const updatedFields = {};
                 
@@ -241,10 +260,6 @@ class EmployeeControler {
                     updatedFields.password = hashedPw;
                 }
                 
-                if (roleId) {
-                    updatedFields.roleId = roleId;
-                }
-
                 const employee = await Employee.findOne({
                     where: {
                         employeeId: req.params.id,
@@ -252,7 +267,7 @@ class EmployeeControler {
                     }
                 });
                 if (!employee) {
-                    req.status(500).json({message: "Employee doesn't exist!"})
+                    res.status(500).json({message: "Employee doesn't exist!"})
                 } else {
                     employee.set(updatedFields);
                     // Update the employee's account in the database
@@ -272,16 +287,8 @@ class EmployeeControler {
     //POST /employee/:employeeId/delete
     async employeeDeleteAccount(req, res, next) {
         const employee_id = req.params.employeeId;
-        const user = await Employee.findOne(
-            {
-                where: {
-                    email: req.session.user.email,
-                }
-            }
-        )
-        
-        if (employee_id === user.employeeId) {
-            req.status(500).json({message: "You can't delete yourself!"});
+        if (employee_id == req.session.user.id) {
+            res.status(500).json({message: "You can't delete yourself!"});
         }
 
         if (req.session.user.role === 2 || req.session.user.role === 4) {
@@ -295,7 +302,7 @@ class EmployeeControler {
                     }
                 )
                 if (!employee) {
-                    req.status(500).json({message: "Employee doesn't exist!"})
+                    res.status(500).json({message: "Employee doesn't exist!"})
                 } else {
                     await employee.destroy();
                 }   
@@ -316,7 +323,7 @@ class EmployeeControler {
                     }
                 )
                 if (!employee) {
-                    req.status(500).json({message: "Employee doesn't exist!"})
+                    res.status(500).json({message: "Employee doesn't exist!"})
                 } else {
                     await employee.destroy();
                 }   
