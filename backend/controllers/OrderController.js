@@ -1,6 +1,6 @@
 const {models: {Order, Customer, Delivery, Employee, Parcel}} = require("../models");
 const sequelize = require("sequelize");
-
+const Joi = require("joi")
 class OrderController {
     //GET /order
     async getAllOrders(req, res, next) {
@@ -79,42 +79,22 @@ class OrderController {
     //POST /order/create
     async createOrder(req, res, next) {
         const schema = Joi.object({
-            name: Joi.string().pattern(
-                new RegExp("/^[\p{L}\p{M}- ]+$/u")
-            ),
-            firstName: Joi.string().pattern(
-                new RegExp("/^[\p{L}\p{M}- ]+$/u")
-            ).required(),
-            lastName: Joi.string().pattern(
-                new RegExp("/^[\p{L}\p{M}- ]+$/u")
-            ).required(),
-            province: Joi.string().pattern(
-                new RegExp("/^[\p{L}\p{M}- ]+$/u")
-            ).required(),
-            district: Joi.string().pattern(
-                new RegExp("/^[\p{L}\p{M}- ]+$/u")
-            ).required(),
-            detailAddress: Joi.string().pattern(
-                new RegExp("/^[\p{L}\p{M}-,./ ]+$/u")
-            ).required(),
-            receiverName: Joi.string().pattern(
-                new RegExp("/^[\p{L}\p{M}- ]+$/u")
-            ).required(),
-            receiverProvince: Joi.string().pattern(
-                new RegExp("/^[\p{L}\p{M}- ]+$/u")
-            ).required(),
-            receiverDistrict: Joi.string().pattern(
-                new RegExp("/^[\p{L}\p{M}- ]+$/u")
-            ).required(),
+            name: Joi.string().required(),
+            firstName: Joi.string().required(),
+            lastName: Joi.string().required(),
+            province: Joi.string().required(),
+            district: Joi.string().required(),
+            detailAddress: Joi.string().required(),
+            receiverName: Joi.string().required(),
+            receiverProvince: Joi.string().required(),
+            receiverDistrict: Joi.string().required(),
             receiverPhone: Joi.string().pattern(
-                new RegExp("/^(0[23789]|05)\d{8}$/")
+                new RegExp("^\\+?[0-9]{1,15}$")
             ).required(),
-            receiverDetailAddress: Joi.string().pattern(
-                new RegExp("/^[\p{L}\p{M}-,./ ]+$/u")
-            ).required(),
+            receiverDetailAddress: Joi.string().required(),
             email: Joi.string().email(),
             phone: Joi.string().pattern(
-                new RegExp("/^(0[23789]|05)\d{8}$/")
+                new RegExp("^\\+?[0-9]{1,15}$")
             ).required(),
             weight: Joi.number().min(0),
             price: Joi.number().integer().min(1),

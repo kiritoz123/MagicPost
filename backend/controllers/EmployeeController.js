@@ -1,9 +1,19 @@
 const {models: {Employee, Role}} = require("../models");
-
+const Joi = require("joi");
 const bcrypt = require("bcrypt");
 class EmployeeControler {
     //POST /login
     async employeeLogIn(req, res, next) {
+        const loginSchema = Joi.object({
+            email: Joi.string().email().required(),
+            password: Joi.string().required(),
+        })
+        const {error} = loginSchema.validate(req.body)
+        if (error) {
+            return res.status(400).json({
+                msg: "Bad request!",
+            })
+        }
         const loginEmail = req.body.email.toLowerCase();
         const loginPassword = req.body.password;
 
@@ -68,34 +78,17 @@ class EmployeeControler {
     async employeeCreateAccount(req, res, next) {
         const schema = Joi.object({
             email: Joi.string().email().required(),
-            password: joi.string().required(),
-            firstName: Joi.string().pattern(
-                new RegExp("/^[\p{L}\p{M}- ]+$/u")
-            ).required(),
-            lastName: Joi.string().pattern(
-                new RegExp("/^[\p{L}\p{M}- ]+$/u")
-            ).required(),
-            address: Joi.string().pattern(
-                new RegExp("/^[\p{L}\p{M},./ 0-9]+$/u")
-            ).required(),
+            password: Joi.string().required(),
+            firstName: Joi.string().required(),
+            lastName: Joi.string().required(),
+            address: Joi.string().required(),
             phone: Joi.string().pattern(
-                new RegExp("/^(0[23789]|05)\d{8}$/")
+                new RegExp("^\\+?[0-9]{1,15}$")
             ).required(),
             roleId: Joi.number().integer().min(1).max(5),
             branchId: Joi.number().integer().min(1),
         });
-        const dateSchema = Joi.object({
-            day: Joi.number().integer().min(1).max(31).required(),
-            month: Joi.number().integer().min(1).max(12).required(),
-            year: Joi.number().integer().min(1900).max(2099).required()
-        }).custom((value, helpers) => {
-            const {day, month, year} = value;
-            const date = new Date(year, month - 1, day);
-            if (date.getFullYear() !== year || date.getMonth() + 1 !== month || date.getDate() !== day) {
-                return helpers.error('any.invalid');
-            }
-            return value;
-        }, 'Date validation');
+
         const result = schema.validate({
             email: req.body.email,
             password: req.body.password,
@@ -106,12 +99,9 @@ class EmployeeControler {
             roleId: req.body.roleId,
             branchId: req.body.branchId,
         });
-        const dateResult = dateSchema.validate({
-            day: req.body.day,
-            month: req.body.month,
-            year: req.body.year,
-        });
-        if (result.error || dateResult.error) {
+
+        if (result.error) {
+            console.log(result.error);
             return res.status(400).send("Bad request");
         }
 

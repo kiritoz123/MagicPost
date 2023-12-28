@@ -1,5 +1,5 @@
 const {models: {Customer, Order}} = require("../models");
-
+const Joi = require("joi");
 class CustomerController {
     //GET /customer
     async getAllCustomers(req, res, next) {

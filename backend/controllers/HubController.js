@@ -1,5 +1,5 @@
 const {models: {Branch}} = require("../models");
-
+const Joi = require("joi")
 class HubController {
     //GET /hub
     async getAllHub(req, res, next) {

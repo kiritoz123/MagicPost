@@ -1,5 +1,5 @@
 const dotenv = require("dotenv").config()
-const joi = require("joi")
+const Joi = require("joi")
 const bcrypt = require("bcrypt")
 const { models: {Admin }} = require("../models")
 
@@ -7,10 +7,10 @@ class AdminController {
 
     //POST /admin/create
     async adminCreateAccount(req, res, next) {
-        const adminCreateSchema = createJoiObject(
+        const adminCreateSchema = Joi.object(
             {
-                username: joi.string().alphanum().required().min(5).max(255),
-                password: joi.string().required()
+                username: Joi.string().alphanum().required().min(5).max(255),
+                password: Joi.string().required()
             }
         );
         const {error} = adminCreateSchema.validate(req.body)
@@ -50,10 +50,10 @@ class AdminController {
 
     //POST /admin/login
     async adminLogIn(req, res, next) {
-        const adminLoginSchema = createJoiObject(
+        const adminLoginSchema = Joi.object(
             {
-                username: joi.string().alphanum().required().min(5).max(255),
-                password: joi.string().required()
+                username: Joi.string().alphanum().required().min(5).max(255),
+                password: Joi.string().required()
             }
         );
         const {error} = adminLoginSchema.validate(req.body)

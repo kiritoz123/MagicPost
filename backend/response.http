@@ -24,23 +24,22 @@ content-type: application/json
 }
 
 ###
-POST http://localhost:3000/employee/create
+POST http://localhost:3000/api/employee/create
 Content-Type: application/json
 
 {
-    "email":"abc@123.vn",
+    "email":"abcd@gmail.com",
     "password": "password",
     "firstName": "deptrai",
     "lastName": "deptrai",
     "dateOfBirth": "10/10/2010",
     "address": "and, sjs, đmm",
-    "phone": "0999299292",
-    "roleId": 1,
-    "branchId": null
+    "phone": "0238492093",
+    "roleId": 1
 }
 
 ###
-POST http://localhost:3000/employee/login
+POST http://localhost:3000/api/employee/login
 Content-Type: application/json
 
 {
@@ -48,13 +47,13 @@ Content-Type: application/json
     "password": "password"
 }
 ###
-POST http://localhost:3000/employee/logout
+POST http://localhost:3000/api/employee/logout
 
 ###
-GET http://localhost:3000/employee
+GET http://localhost:3000/api/employee
 
 ###
-POST http://localhost:3000/employee/create
+POST http://localhost:3000/api/employee/create
 Content-Type: application/json
 
 {
@@ -64,18 +63,18 @@ Content-Type: application/json
     "lastName": "deptrai",
     "dateOfBirth": "10/10/2010",
     "address": "and, sjs, đmm",
-    "phone": "0999299252",
+    "phone": "0999299352",
     "roleId": 2,
-    "branchId": 1
+    "branchId": 2
 }
 
 ###
-GET http://localhost:3000/role
+GET http://localhost:3000/api/role
 ###
-GET http://localhost:3000/role/1
+GET http://localhost:3000/api/role/1
 
 ###
-POST http://localhost:3000/employee/2/update
+POST http://localhost:3000/api/employee/2/update
 Content-Type: application/json
 
 {
@@ -83,7 +82,65 @@ Content-Type: application/json
 }
 
 ###
-POST http://localhost:3000/employee/8/delete
+POST http://localhost:3000/api/employee/8/delete
 
 ###
-GET http://localhost:3000/getData
+GET http://localhost:3000/api/getData
+
+###
+POST http://localhost:3000/api/branch/create
+Content-Type: application/json
+
+{
+    "managerId":3,
+    "branchName":"Que Vo 1",
+    "province": "Bac Ninh",
+    "district":"Que Vo",
+    "detailAddress": "Que Vo 1",
+    "isHub":1
+}
+###
+POST http://localhost:3000/api/branch/create
+Content-Type: application/json
+
+{
+    "managerId":1,
+    "branchName":"Que Vo 2",
+    "province": "Bac Ninh",
+    "district":"Que Vo",
+    "detailAddress": "Que Vo 2",
+    "hubId": 13,
+    "isHub":0
+}
+
+###
+POST http://localhost:3000/api/employee/create
+Content-Type: application/json
+
+{
+    "email":"employe@gmail.vn",
+    "password": "password",
+    "firstName": "deptrai",
+    "lastName": "deptrai",
+    "dateOfBirth": "10/10/2010",
+    "address": "and, sjs, đmm",
+    "phone": "0999294952",
+    "branchId": 13,
+    "roleId": 5
+}
+
+###
+POST http://localhost:3000/api/employee/create
+Content-Type: application/json
+
+{
+    "email":"employee@gmail.com",
+    "password": "password",
+    "firstName": "deptrai",
+    "lastName": "deptrai",
+    "dateOfBirth": "10/10/2010",
+    "address": "and, sjs, đmm",
+    "phone": "0999299359",
+    "branchId": 14,
+    "roleId":4
+}

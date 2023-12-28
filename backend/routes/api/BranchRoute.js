@@ -11,5 +11,5 @@ router.post("/create", authentication, authorization(["admin", 1]), createBranch
 router.post("/:branchId/update", authentication, authorization(["admin", 1]), updateBranch)
 router.post("/:branchId/delete", authentication, authorization(["admin", 1]), deleteBranch)
 router.get("/:branchId/parcel", authentication, authorization(["admin", 1, 2, 4]), getBranchById)
-router.get("/search", authentication, getBranchById)
+// router.get("/search", authentication, getBranchById)
 module.exports = router;

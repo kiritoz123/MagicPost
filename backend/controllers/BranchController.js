@@ -1,5 +1,5 @@
 const {models: {Branch, Employee, Parcel}} = require("../models");
-
+const Joi = require("joi");
 class BranchController {
 
     //GET /branch
@@ -17,7 +17,7 @@ class BranchController {
 
     //POST /branch/create
     async createBranch(req, res, next) {
-        const branchCreateSchema = createJoiObject(
+        const branchCreateSchema = Joi.object(
             {
                 managerId: Joi.number().integer().min(0).required(),
                 branchName: Joi.string().required(),
@@ -25,48 +25,64 @@ class BranchController {
                 district: Joi.string().required(),
                 detailAddress: Joi.string().required(),
                 isHub: Joi.number().integer().min(0).max(1).required(),    
+                hubId: Joi.number().integer().min(0),
             }
         );
         const {error} = branchCreateSchema.validate(req.body)
         if(error){
             return res.status(400).json({
+                error: error,
                 msg: "Invalid request!"
             })
         }
         const managerId = req.body.managerId;
+
         const branchName = req.body.branchName;
         const province = req.body.province;
         const district = req.body.district;
         const detailAddress = req.body.detailAddress;
         const isHub = req.body.isHub;
-        const newBranch = async () => {
-            if (isHub === 1) {
-                return await Branch.create({
-                    managerId: managerId,
-                    branchName: branchName,
-                    location: `${detailAddress}, ${district}, ${province}`,
-                    isHub: isHub,
-                    hubId: req.body.hubId,
-                });
-            } else {
-                return await Branch.create({
-                    managerId: managerId,
-                    branchName: branchName,
-                    location: `${detailAddress}, ${district}, ${province}`,
-                    isHub: isHub,
-                });
-            }
+        let role_id;
+        var branch;
+        if (isHub === 0) {
+            role_id = 2;
+            branch = await Branch.create({
+                managerId: managerId,
+                branchName: branchName,
+                location: `${detailAddress}, ${district}, ${province}`,
+                isHub: isHub,
+                hubId: req.body.hubId,
+            });
+        } else {
+            role_id = 4;
+            branch = await Branch.create({
+                managerId: managerId,
+                branchName: branchName,
+                location: `${detailAddress}, ${district}, ${province}`,
+                isHub: isHub,
+            });
         }
+
+        const manager = await Employee.findOne({
+            where: {
+                employeeId: managerId,
+            },
+        })
+        
+        manager.update({
+            "branchId": branch.branchId,
+            roleId: role_id,
+        })
         return res.status(200).json({
             msg: "Create branch successfully",
-            branch: newBranch(),
+            branch: branch,
         })
     }
 
     //POST /branch/:branchId/update
     async updateBranch(req, res, next) {
         try {
-            const branchUpdateSchema = createJoiObject(
+            const branchUpdateSchema = Joi.object(
                 {
                     managerId: Joi.number().integer().min(0).required(),
                     branchName: Joi.string().required(),
@@ -118,7 +134,23 @@ class BranchController {
             branch.set(updatedFields);
             // Update the employee's account in the database
             await branch.save();
-            
+            if (managerId) {
+                let role_id;
+                if (branch.isHub === 0) {
+                    role_id = 2;
+                } else {
+                    role_id = 4;
+                }
+                const manager = await Employee.findOne({
+                    where: {
+                        employeeId: managerId,
+                    }
+                })
+                manager.update({
+                    branchId: branch.branchId,
+                    roleId: role_id,
+                })
+            }
             // Send a response indicating success
             res.status(200).json({ message: 'Employee account updated successfully' });
         } catch (error) {
@@ -248,10 +280,10 @@ class BranchController {
     async searchBranch(req, res) {
         const schema = Joi.object({
             province: Joi.string().pattern(
-                new RegExp("/^[\p{L}\p{M}- ]+$/u")
+                new RegExp("/^[\p{L}\p{M} ]+$/u")
             ),
             district: Joi.string().pattern(
-                new RegExp("/^[\p{L}\p{M}- ]$/u")
+                new RegExp("/^[\p{L}\p{M} ]$/u")
             ),
         });
         const validate = schema.validate(req.body);

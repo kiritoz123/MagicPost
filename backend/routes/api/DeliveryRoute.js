@@ -1,7 +1,7 @@
 const express = require('express');
 const router = express.Router();
 const { authentication, authorization } = require('../../middleware/auth.js')
-const {} = require("../../controllers/DeliveryController.js");
+const {getAllDelivery, transshipment, createDelivery, receiveDelivery, getPath} = require("../../controllers/DeliveryController.js");
 
 router.get("/", authentication, authorization(["admin", 1]), getAllDelivery);
 router.post("/:deliveryId/transshipment", authentication, authorization(["admin", 1]), transshipment);
